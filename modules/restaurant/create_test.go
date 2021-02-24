@@ -18,8 +18,8 @@ func TestCreateRestaurant(t *testing.T) {
 		Street: "Calle" + modules.MockRand(),
 		City:   "Ciudad" + modules.MockRand(),
 		State:  "Estado" + modules.MockRand(),
-		Lat:    "-99.1270470974249",
-		Lng:    "19.4400570537131",
+		Lat:    "19.4400570537131",
+		Lng:    "-99.1270470974249",
 	}
 	schema.DoNotToken(t, `mutation{
 		createRestaurant(id: "%s", rating: %d,

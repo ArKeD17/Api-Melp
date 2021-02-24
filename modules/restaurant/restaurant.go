@@ -2,6 +2,8 @@ package restaurant
 
 import (
 	"fmt"
+	"math"
+	"strconv"
 
 	"github.com/graphql-go/graphql"
 	"github.com/mvochoa/logger"
@@ -18,6 +20,11 @@ var (
 		return fmt.Errorf("No existe ningún registro con el ID: '%v'", id)
 	}
 )
+
+// GetRestaurant consulta la información de una tarjeta en especifico
+func (r Restaurant) GetRestaurant(p graphql.ResolveParams) (interface{}, error) {
+	return GetRestaurant(p.Args["id"].(string))
+}
 
 // Restaurants obtiene la lista de los restaurantes
 func (r Restaurant) Restaurants(p graphql.ResolveParams) (interface{}, error) {
@@ -44,6 +51,43 @@ func (r Restaurant) Restaurants(p graphql.ResolveParams) (interface{}, error) {
 
 	logger.Error("Restaurant:Restaurants - CLOSE DATABASE", db.Close())
 	return result, err
+}
+
+// StatisticsRestaurants obtiene la lista de los restaurantes en base a distancia y radio en metros.
+func (s StatisticsRestaurant) StatisticsRestaurants(p graphql.ResolveParams) (interface{}, error) {
+
+	const R = 6371e3 // earth's mean radius in metres
+	const pi = math.Pi
+
+	lat, _ := strconv.ParseFloat(p.Args["lat"].(string), 64)
+	lng, _ := strconv.ParseFloat(p.Args["lng"].(string), 64)
+	radius := float64(p.Args["radius"].(int))
+
+	minLat := lat - radius/R*180/pi
+	maxLat := lat + radius/R*180/pi
+	minLng := lng - radius/R*180/pi/math.Cos(lat*pi/180)
+	maxLng := lng + radius/R*180/pi/math.Cos(lat*pi/180)
+
+	db := database.ConnectRoot()
+	err := db.QueryRow(
+		fmt.Sprintf(`
+		SELECT %s
+		FROM RESTAURANTS WHERE lat Between $1 And $2 And lng Between $3 And $4
+		`, "count(id) as count, avg(rating) as avg, stddev(rating) as std"),
+		minLat,
+		maxLat,
+		minLng,
+		maxLng,
+	).Scan(scanStatistics(&s)...)
+
+	if err != nil {
+		logger.Error("Restaurant:StatisticsRestaurants", err)
+		err = modules.ErrServer
+		return nil, err
+	}
+
+	logger.Error("Restaurant:StatisticsRestaurants - CLOSE DATABASE", db.Close())
+	return s, nil
 }
 
 // GetRestaurant retorna los datos de un restaurante a partir del ID
@@ -78,4 +122,9 @@ func scan(r *Restaurant) []interface{} {
 	r.Phone = &modules.PhoneScalar{}
 
 	return []interface{}{&r.ID, &r.Rating, &r.Name, &r.Site, &r.Email.Value, &r.Phone.Value, &r.Street, &r.City, &r.State, &r.Lat, &r.Lng}
+}
+
+func scanStatistics(s *StatisticsRestaurant) []interface{} {
+
+	return []interface{}{&s.Count, &s.Avg, &s.Std}
 }

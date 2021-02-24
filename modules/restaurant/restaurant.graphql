@@ -24,6 +24,17 @@ type Restaurant {
   lng: String
 }
 
+# Tipo de dato para las estadisticas de los restaurantes
+type StatisticsRestaurant {
+  # Cantidad de restaurante que se encuentran dentro del radio.
+  count: Int
+  # Promedio de Calificación de los restaurante
+  avg: Float
+  # Desviación estandar de la calificación de los restaurantes dentro del radio.
+  std: Float
+}
+
+
 # Lista de restaurantes
 type ListRestaurants {
   # Lista de restaurantes
@@ -31,8 +42,12 @@ type ListRestaurants {
 }
 
 type Query {
+  # Retorna los datos de un restaurante en especifico.
+  getRestaurant(id: String!): Restaurant!
   # Retorna la lista de restaurantes
   restaurants: ListRestaurants!
+  # Retorna estadisticas de ciertos restaurantes basado en un radio medido en metros.
+  statisticsRestaurants(lat: String!, lng: String!, radius: Int!): StatisticsRestaurant!
 }
 
 type Mutation {

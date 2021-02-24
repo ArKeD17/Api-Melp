@@ -20,6 +20,13 @@ type Restaurant struct {
 	Lng    string               `json:"lng"`
 }
 
+// StatisticsRestaurant Tipo de dato para las estadisticas de los restaurantes
+type StatisticsRestaurant struct {
+	Count int     `json:"count"`
+	Avg   float64 `json:"avg"`
+	Std   float64 `json:"std"`
+}
+
 // ListRestaurants Lista de restaurantes
 type ListRestaurants struct {
 	Data []Restaurant `json:"data"`
@@ -27,10 +34,36 @@ type ListRestaurants struct {
 
 // Queries comment
 var Queries = graphql.Fields{
+	"getRestaurant": &graphql.Field{
+		Type:        graphql.NewNonNull(RestaurantType),
+		Description: "Retorna los datos de un restaurante en especifico.",
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type: graphql.NewNonNull(graphql.String),
+			},
+		},
+		Resolve: Restaurant{}.GetRestaurant,
+	},
 	"restaurants": &graphql.Field{
 		Type:        graphql.NewNonNull(ListRestaurantsType),
 		Description: "Retorna la lista de restaurantes",
 		Resolve:     Restaurant{}.Restaurants,
+	},
+	"statisticsRestaurants": &graphql.Field{
+		Type:        graphql.NewNonNull(StatisticsRestaurantType),
+		Description: "Retorna estadisticas de ciertos restaurantes basado en un radio medido en metros.",
+		Args: graphql.FieldConfigArgument{
+			"lat": &graphql.ArgumentConfig{
+				Type: graphql.NewNonNull(graphql.String),
+			},
+			"lng": &graphql.ArgumentConfig{
+				Type: graphql.NewNonNull(graphql.String),
+			},
+			"radius": &graphql.ArgumentConfig{
+				Type: graphql.NewNonNull(graphql.Int),
+			},
+		},
+		Resolve: StatisticsRestaurant{}.StatisticsRestaurants,
 	},
 }
 
@@ -176,6 +209,26 @@ var RestaurantType = graphql.NewObject(graphql.ObjectConfig{
 		"lng": &graphql.Field{
 			Type:        graphql.String,
 			Description: "Nombre del restaurante",
+		},
+	},
+})
+
+// StatisticsRestaurantType Tipo de dato para las estadisticas de los restaurantes
+var StatisticsRestaurantType = graphql.NewObject(graphql.ObjectConfig{
+	Name:        "StatisticsRestaurant",
+	Description: "Tipo de dato para las estadisticas de los restaurantes",
+	Fields: graphql.Fields{
+		"count": &graphql.Field{
+			Type:        graphql.Int,
+			Description: "Cantidad de restaurante que se encuentran dentro del radio.",
+		},
+		"avg": &graphql.Field{
+			Type:        graphql.Float,
+			Description: "Promedio de Calificación de los restaurante",
+		},
+		"std": &graphql.Field{
+			Type:        graphql.Float,
+			Description: "Desviación estandar de la calificación de los restaurantes dentro del radio.",
 		},
 	},
 })
