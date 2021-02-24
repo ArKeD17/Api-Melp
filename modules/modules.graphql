@@ -1,0 +1,30 @@
+# +modules.go
+# El `Token` representa una cadena que tiene la función de validar la sesión  del usuario, el token se enviá en los encabezados de la petición con el nombre de **Authorization**
+scalar Token
+
+# Fecha el formato valido es: YYYY-MM-DD
+scalar Date
+
+# Numero de teléfono, Los formatos validos son: +001122334455, 1122334455, 11-22-33-44-55, 11 22 33 44 55, +00-11-22-33-44-55, +00 11 22 33 44 55
+scalar Phone
+
+# Correo electrónico el formato es valido: correo@electronic.o
+scalar Email
+
+# Contraseña para usuario debe tener una longitud minima de 8 caracteres ademas de contener al menos con un numero y una letra mayúscula
+scalar Password
+
+# Hora el formato valido es: hh:mm:ss
+scalar Time
+
+# Información de las paginas
+type PageInfo {
+  # Numero de pagana anterior
+  back_page: Int
+  # Numero de pagana siguiente
+  next_page: Int
+  # Numero de pagana actual
+  page: Int
+  # Numero de total de paginas.
+  total_pages: Int
+}

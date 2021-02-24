@@ -1,0 +1,50 @@
+# Tipo de dato para los restaurantes
+type Restaurant {
+  # Identificador del restaurante
+  id: String
+  # Calificación del restaurante
+  rating: int
+  # Nombre del restaurante
+  name: String
+  # Nombre del restaurante
+  site: String
+  # Correo electrónico del cliente
+  email: modules.EmailScalar
+  # Numero telefónico del restaurante.
+  phone: modules.PhoneScalar
+  # Nombre del restaurante
+  street: String
+  # Nombre del restaurante
+  city: String
+  # Nombre del restaurante
+  state: String
+  # Nombre del restaurante
+  lat: String
+  # Nombre del restaurante
+  lng: String
+}
+
+# Lista de restaurantes
+type ListRestaurants {
+  # Lista de restaurantes
+  data: [Restaurant]!
+}
+
+type Query {
+  # Retorna la lista de restaurantes
+  restaurants: ListRestaurants!
+}
+
+type Mutation {
+  # Registra un nuevo restaurante
+  createRestaurant(id: String!, rating: int!, name: String!, site: String!, email: modules.EmailScalar!, phone: modules.PhoneScalar!, street: String!, city: String!, state: String!, lat: String!, lng: String! ): Restaurant!
+  # Actualiza los datos de un restaurante en especifico
+  updateRestaurant(id: String!, rating: int!, name: String, site: String, email: modules.EmailScalar, phone: modules.PhoneScalar, street: String, city: String, state: String, lat: String, lng: String ): Restaurant!
+  # Elimina el registro de un restaurante en especifico
+  deleteRestaurant(id: String!): String!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
