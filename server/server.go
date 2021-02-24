@@ -18,7 +18,7 @@ func Run() {
 	port := ":" + os.Getenv("PORT")
 
 	http.HandleFunc("/graphql", CORS(httpGraphql))
-
+	log.Println(os.Getenv("PORT"))
 	log.Printf("Servidor escuchando en: http://localhost%s", port)
 	http.ListenAndServe(port, nil)
 }
