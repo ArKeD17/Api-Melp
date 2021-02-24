@@ -73,7 +73,7 @@ func (s StatisticsRestaurant) StatisticsRestaurants(p graphql.ResolveParams) (in
 		fmt.Sprintf(`
 		SELECT %s
 		FROM RESTAURANTS WHERE lat Between $1 And $2 And lng Between $3 And $4
-		`, "count(id) as count, avg(rating) as avg, stddev(rating) as std"),
+		`, "count(id) as count,(CASE WHEN avg(rating) IS NULL THEN 0 ELSE avg(rating) END) as avg, (CASE WHEN stddev(rating) IS NULL THEN 0 ELSE stddev(rating) END) as std"),
 		minLat,
 		maxLat,
 		minLng,
