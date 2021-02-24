@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -12,21 +11,21 @@ import (
 	"github.com/mvochoa/logger"
 )
 
-// Connect genera una conexión a la base de datos con un usuario con solamente permisos lectura
-func Connect() *sql.DB {
-	password, _ := ioutil.ReadFile(os.Getenv("POSTGRES_U_READ_PASSWORD_FILE"))
-	return connect("u_read", string(password))
-}
+// // Connect genera una conexión a la base de datos con un usuario con solamente permisos lectura
+// func Connect() *sql.DB {
+// 	password, _ := ioutil.ReadFile(os.Getenv("POSTGRES_U_READ_PASSWORD_FILE"))
+// 	return connect("u_read", string(password))
+// }
 
-// ConnectAdmin genera una conexión a la base de datos con un usuario con permisos de lectura y escritura
-func ConnectAdmin() *sql.DB {
-	password, _ := ioutil.ReadFile(os.Getenv("POSTGRES_U_WRITE_PASSWORD_FILE"))
-	return connect("u_write", string(password))
-}
+// // ConnectAdmin genera una conexión a la base de datos con un usuario con permisos de lectura y escritura
+// func ConnectAdmin() *sql.DB {
+// 	password, _ := ioutil.ReadFile(os.Getenv("POSTGRES_U_WRITE_PASSWORD_FILE"))
+// 	return connect("u_write", string(password))
+// }
 
 // ConnectRoot genera una conexión a la base de datos con un usuario root
 func ConnectRoot() *sql.DB {
-	password, _ := ioutil.ReadFile(os.Getenv("POSTGRES_PASSWORD_FILE"))
+	password := os.Getenv("POSTGRES_PASSWORD")
 	return connect(os.Getenv("POSTGRES_USER"), string(password))
 }
 

@@ -22,7 +22,7 @@ var (
 // Restaurants obtiene la lista de los restaurantes
 func (r Restaurant) Restaurants(p graphql.ResolveParams) (interface{}, error) {
 	result := ListRestaurants{}
-	db := database.Connect()
+	db := database.ConnectRoot()
 	rows, err := db.Query(
 		fmt.Sprintf(`
 		SELECT %s
@@ -50,7 +50,7 @@ func (r Restaurant) Restaurants(p graphql.ResolveParams) (interface{}, error) {
 func GetRestaurant(id string) (Restaurant, error) {
 	var r Restaurant
 
-	db := database.Connect()
+	db := database.ConnectRoot()
 	err := db.QueryRow(
 		fmt.Sprintf(`
 		SELECT %s

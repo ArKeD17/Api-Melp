@@ -14,7 +14,7 @@ func (r Restaurant) Delete(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 
-	db := database.ConnectAdmin()
+	db := database.ConnectRoot()
 	_, err := db.Exec(
 		`
 		DELETE FROM RESTAURANTS WHERE id = $1

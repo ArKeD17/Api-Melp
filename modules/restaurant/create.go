@@ -21,7 +21,7 @@ func (r Restaurant) Create(p graphql.ResolveParams) (interface{}, error) {
 	lat, _ := strconv.ParseFloat(r.Lat, 13)
 	lng, _ := strconv.ParseFloat(r.Lng, 13)
 
-	db := database.ConnectAdmin()
+	db := database.ConnectRoot()
 	err = db.QueryRow(
 		`
 		INSERT INTO RESTAURANTS(id, rating, name, site, email, phone, street, city, state, lat, lng)

@@ -23,7 +23,7 @@ func (r Restaurant) Update(p graphql.ResolveParams) (interface{}, error) {
 		return nil, modules.ErrServer
 	}
 
-	db := database.ConnectAdmin()
+	db := database.ConnectRoot()
 	result, err := db.Exec(`UPDATE RESTAURANTS SET rating = $2, name = $3, site = $4, email = $5, phone = $6, street = $7, city = $8, state = $9, lat = $10, lng = $11 WHERE id = $1`, r.ID, r.Rating, r.Name, r.Site, r.Email.Value, r.Phone.Value, r.Street, r.City, r.State, r.Lat, r.Lng)
 	if err == nil {
 		_, err = result.RowsAffected()
